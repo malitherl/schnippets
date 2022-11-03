@@ -178,11 +178,12 @@ const styles = StyleSheet.create({
   },
   snippet: {
     fontSize: 24,
-    width: '80vw', 
+    width: "80svw",
+    height: "100vh", 
     alignContent:"flex-start",
     justifyContent:"center",
     margin: 50,
-    lineHeight: '1.5em'
+    lineHeight: "50%"
   },
   panel: {
     display: 'flex',
@@ -190,15 +191,16 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     justifyContent: 'center',
     position: 'relative', 
-    height: '100%',
+    height: 250,
     width: '100%',
     backgroundColor: 'transparent',
     padding: 10,
   },
   buttons: {
-    backgroundColor: 'black',
+    backgroundColor: 'transparent',
     padding: 10,
     height: '25%',
+    width: 200,
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-around'

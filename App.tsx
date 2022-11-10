@@ -5,9 +5,10 @@ import { colors, Text } from 'react-native-elements'
 import { ThemeProvider } from 'styled-components'
 import { Styles } from './lib/constants'
 import { UserContextProvider, useUser } from './components/UserContext'
-import List from './components/TodoList'
 import Auth from './components/Auth'
-
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import Home from './components/Home'
 const theme = {
   colors: {
     ...Platform.select({
@@ -20,19 +21,33 @@ const theme = {
 const Container = () => {
   const { user } = useUser()
 
-  return user ? <List /> : <Auth />
+  return user ? <Home /> : <Auth />
 }
+
+const Content = () => {
+  return (
+      <UserContextProvider>
+        <ThemeProvider theme={theme}>
+          <View style={styles.container}>
+            <Container />
+            <StatusBar style="auto" />
+          </View>
+        </ThemeProvider>
+    </UserContextProvider>
+  )
+}
+
+
+
+const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
-    <UserContextProvider>
-      <ThemeProvider theme={theme}>
-        <View style={styles.container}>
-          <Container />
-          <StatusBar style="auto" />
-        </View>
-      </ThemeProvider>
-    </UserContextProvider>
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name="Home" component={Content} />
+      </Stack.Navigator>
+    </NavigationContainer>
   )
 }
 

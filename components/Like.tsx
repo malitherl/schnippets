@@ -45,7 +45,7 @@ export default function Like ( props: any) {
 
 
     return(
-        <View>
+
             <AntDesign
               style={{ alignSelf: 'center' }}
               name="heart"
@@ -53,7 +53,7 @@ export default function Like ( props: any) {
               color= {liked}
               onPress={() => { handlePress(props.snippet.id)}}
             />
-        </View>
+      
     )
 
 

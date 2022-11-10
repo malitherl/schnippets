@@ -4,12 +4,12 @@ import { Styles } from '../lib/constants'
 import { Text } from 'react-native-elements'
 import { supabase } from '../lib/initSupabase'
 import { useUser } from '../components/UserContext'
-import { FontAwesome, AntDesign } from '@expo/vector-icons';
 import { Button, Input, ListItem, CheckBox } from 'react-native-elements'
 import { Snippet } from './style' 
 /** URL polyfill. Required for Supabase queries to work in React Native. */
 import 'react-native-url-polyfill/auto'
 import Like from './Like'
+import ReaderView from './ReaderView'
 
  
 type Snippet = {
@@ -116,40 +116,10 @@ export default function TodoList() {
             contentContainerStyle={{flexGrow: 1, justifyContent: 'center', 
             alignItems: "center", }}
             style={styles.snippetList}> 
-            { 
-              snippets.map(snippet => 
-              <View key={snippet.id}>
-                <Text style={styles.snippet} key={snippet.id}>{snippet.snippet}</Text>
-                <View style= {styles.panel}>
-                  <View style={styles.buttons}>
-                    <Like handleLike= {handleLike} snippet= {snippet} isLiked={isLiked} />
-                    <FontAwesome
-                      style={{ alignSelf: 'center' }}
-                      name="commenting"
-                      size={35}
-                      color="#fff"
-                    />
-                    <FontAwesome
-                      style={{ alignSelf: 'center' }}
-                      name="user"
-                      size={35}
-                      color="#fff"         
-                    />  
-                    </View>
-                </View>
-            </View>)
-            
-            
-            
-            
-            
-            }
-           
+            {snippets.map(snippet => <ReaderView id={snippet.id} handleLike={handleLike} section={snippet} isLiked={isLiked}/>)}
           </ScrollView>
-         
+        </View>
       </View>
-      
-    </View>
   )
 }
  
@@ -204,7 +174,5 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-around'
-  }
-  
-  ,
+  },
 })

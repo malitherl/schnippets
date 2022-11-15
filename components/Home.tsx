@@ -1,32 +1,54 @@
-import {View, Text, StyleSheet, TouchableOpacity, ScrollView} from 'react-native'
+import {View, StyleSheet, ScrollView} from 'react-native'
 import { supabase } from '../lib/initSupabase'
+import { Button, Text } from '@rneui/themed';
+import { useUser } from './UserContext';
 
-export default function Home() {    
-
+export default function Home( {navigation} : any ) {    
+   
     const Separator = () => <View style={styles.separator}/>
 
     return(
         <View>
             <View style={styles.homeFeed}>
-                <Text><h1>Home :)</h1></Text>
-                <TouchableOpacity style={styles.button} onPress={() => supabase.auth.signOut()}><Text>Logout</Text></TouchableOpacity>        
+                <Text h1={true}>Home</Text>
+                <Button title={'Sign out'} 
+                        buttonStyle= {{ 
+                            backgroundColor: "rgba(25,25,25, .7)",
+                            borderRadius: 20,
+                        }} 
+                        containerStyle={{
+                            width: 100,
+                            marginVertical: 10,
+                        }}
+                        size="sm"
+                        titleStyle={{ color: "white"}}
+                        onPress={() => supabase.auth.signOut()} />      
             </View>
             <Separator/>
             
                 <ScrollView style={styles.activityFeed}>
                     <View>
-                        <h2>Recent Books</h2>
-                        <p>Pick up where you left off</p>
+                      <Text h2={true}>Recent Books</Text>
+                      <Text>Pick up where you left off</Text>
                     </View>
                     <Separator/>
                     <View>
-                        <h2>Statistics</h2>
-                        <p>Track your reading process here</p>
+                      <Text h2={true}>Statistics</Text>
+                      <Text>Track your reading process here</Text>
                     </View>
                     <Separator/>
                     <View>
-                        <h3>Find more books by reading new snippets?</h3>
-
+                      <Text h3={true}>Find more books by reading new snippets?</Text>  
+                      <Button title={"Read New Snippets"}
+                              titleStyle={{ fontWeight: "300", fontSize: 18}}
+                              color="secondary"
+                              size='md'
+                              buttonStyle={{ 
+                                borderRadius: 20, 
+                                margin: 20
+                              }}
+                              onPress={() => navigation.navigate('Snippets')}
+                      />
                     </View>
                 </ScrollView>
                 
@@ -43,7 +65,6 @@ const styles = StyleSheet.create({
     button: {
         height: 50,
         width: 100,
-        fontFamily: "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif;",
         display:"flex",
         justifyContent:"center",
         alignSelf: "center",
@@ -58,7 +79,6 @@ const styles = StyleSheet.create({
         borderBottomWidth: StyleSheet.hairlineWidth,
       },
     activityFeed: {
-        fontFamily: "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif;",
         display: "flex",
         flexDirection: "column",
 

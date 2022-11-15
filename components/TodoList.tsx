@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { View, StyleSheet, SafeAreaView, FlatList, ScrollView } from 'react-native'
+import { View, Button, StyleSheet,Text, SafeAreaView, FlatList, ScrollView, TouchableOpacity, Dimensions } from 'react-native'
 import { Styles } from '../lib/constants'
-import { Text } from 'react-native-elements'
 import { supabase } from '../lib/initSupabase'
 import { useUser } from '../components/UserContext'
-import { Button, Input, ListItem, CheckBox } from 'react-native-elements'
 import { Snippet } from './style' 
 /** URL polyfill. Required for Supabase queries to work in React Native. */
 import 'react-native-url-polyfill/auto'
@@ -27,11 +25,10 @@ type Like = {
   user_id: string
 }
 
-export default function TodoList() {
+export default function TodoList({navigation} : any) {
   const { user } = useUser()
   const [snippets, setSnippet] = useState<Array<Snippet>>([])
- 
-
+  const [texts, setTexts] = useState<Array<String>>([])
   useEffect(() => {
     fetchSnippets()
   }, [])
@@ -60,6 +57,8 @@ export default function TodoList() {
       console.log('error', error)
     } else {
       setSnippet(snippets!)
+      const textFromSnippet = snippets.map(s => s.snippet)
+      setTexts(textFromSnippet!)
     }
   }
  
@@ -109,15 +108,13 @@ export default function TodoList() {
     <View>
         <View style={styles.container}>
           <View style={styles.header}>
-            <Text h1>Snimbo</Text>
-            <Button buttonStyle={styles.logoutButton} title="Sign out" onPress={() => supabase.auth.signOut()} />
+            <Button title={'Home'} onPress={() => navigation.goBack()}/>
           </View>
-          <ScrollView 
-            contentContainerStyle={{flexGrow: 1, justifyContent: 'center', 
-            alignItems: "center", }}
-            style={styles.snippetList}> 
-            {snippets.map(snippet => <ReaderView id={snippet.id} handleLike={handleLike} section={snippet} isLiked={isLiked}/>)}
-          </ScrollView>
+          <View 
+             style={styles.snippetList}
+            > 
+            <ReaderView handleLike={handleLike} snippets={snippets} isLiked={isLiked}/>
+          </View>
         </View>
       </View>
   )
@@ -126,14 +123,16 @@ export default function TodoList() {
 const styles = StyleSheet.create({
   container: {
     padding: Styles.spacing,
-    backgroundColor: "#bbb",
-    display: "flex"
+    backgroundColor: "transparent",
+
   },
   header: {
-    backgroundColor: "#bbb",
+    backgroundColor: "transparent",
     flexDirection: "row",
     justifyContent: "space-between",
-    color: "white"
+    color: "white",
+    borderBottomColor: "black",
+    borderBottomWidth: 1, 
   },
   logoutButton: {
     backgroundColor: "transparent",
@@ -143,8 +142,10 @@ const styles = StyleSheet.create({
     padding: 15, 
   },
   snippetList: {
-    width: "100%",
-    height: "100%"
+    overflow: "hidden",
+    height: Dimensions.get("window").height,
+    justifyContent: 'center', 
+    alignItems: "center",
   },
   snippet: {
     fontSize: 24,

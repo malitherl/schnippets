@@ -1,35 +1,65 @@
 import React from 'react'
 import { StatusBar } from 'expo-status-bar'
-import { StyleSheet, View, Platform } from 'react-native'
-import { colors, Text } from 'react-native-elements'
-import { ThemeProvider } from 'styled-components'
+import { StyleSheet, View } from 'react-native'
 import { Styles } from './lib/constants'
+import { ThemeProvider, createTheme } from '@rneui/themed';
 import { UserContextProvider, useUser } from './components/UserContext'
 import Auth from './components/Auth'
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Home from './components/Home'
-const theme = {
-  colors: {
-    ...Platform.select({
-      default: colors.platform.android,
-      ios: colors.platform.ios,
-    }),
+import TodoList from './components/TodoList';
+
+
+//the main issue here: We don't have the useContextProvider wrapped around <TodoList> which means we lose Context 
+
+const theme = createTheme({
+  lightColors: {
+    primary: '#e7e7e8',
   },
-}
+  darkColors: {
+    primary: '#000',
+  },
+  mode: 'light',
+});
 
-const Container = () => {
+
+
+const Login = ({navigation} : any) => {
   const { user } = useUser()
-
-  return user ? <Home /> : <Auth />
+  return user ? <Home navigation={navigation}/> : <Auth />
 }
 
-const Content = () => {
+
+const Container = ({navigation} : any) => {
   return (
       <UserContextProvider>
         <ThemeProvider theme={theme}>
           <View style={styles.container}>
-            <Container />
+            <Login navigation={navigation}/>
+            <StatusBar style="auto" />
+          </View>
+        </ThemeProvider>
+    </UserContextProvider>
+  )
+} 
+
+
+
+const Reader = ({navigation} : any) => {
+  
+  return <TodoList navigation={navigation}/>
+}
+
+
+
+const Content = ({navigation} : any) => {
+  console.log('navigation in Content')
+  return (
+      <UserContextProvider>
+        <ThemeProvider theme={theme}>
+          <View style={styles.container}>
+            <Reader navigation={navigation}/>
             <StatusBar style="auto" />
           </View>
         </ThemeProvider>
@@ -38,14 +68,14 @@ const Content = () => {
 }
 
 
-
 const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="Home" component={Content} />
+      <Stack.Navigator screenOptions={{headerShown: false}} initialRouteName='Home'>
+        <Stack.Screen name="Home" component={Container} />
+        <Stack.Screen name="Snippets" component={Content}/>
       </Stack.Navigator>
     </NavigationContainer>
   )
@@ -53,7 +83,7 @@ export default function App() {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 40,
+    marginTop: 0,
     padding: Styles.spacing,
   },
   verticallySpaced: {

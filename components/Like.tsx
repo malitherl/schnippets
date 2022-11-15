@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { View } from 'react-native'
 import { AntDesign } from '@expo/vector-icons';
+import { useUser } from './UserContext';
 
 
 export default function Like ( props: any) {
-
     const [liked, setLiked] = useState('');
 
     useEffect(() => {
@@ -19,11 +19,9 @@ export default function Like ( props: any) {
     
     const renderBackground = () => {
         props.isLiked(props.snippet.id).then((like: any[]) => {
-            console.log('changing bg')
-            console.log(like)
             let snipLikes = like ? like.length : 0;
             if(snipLikes > 0) {
-              setLiked('#ffcccc')
+              setLiked('pink')
             } else {
               setLiked('#fff')
             }
@@ -31,8 +29,6 @@ export default function Like ( props: any) {
     }
     const changeBackground = () => {
         props.isLiked(props.snippet.id).then((like: any[]) => {
-            console.log('changing bg')
-            console.log(like)
             let snipLikes = like ? like.length : 0;
             if(snipLikes > 0) {
               setLiked('#fff')

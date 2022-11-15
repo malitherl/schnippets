@@ -3,7 +3,7 @@ import { Alert, StyleSheet, View } from 'react-native'
 import { Styles } from '../lib/constants'
 import { supabase } from '../lib/initSupabase'
 
-import { Button, Input } from 'react-native-elements'
+import { Button, Input } from '@rneui/themed';
 
 export default function Auth() {
   const [email, setEmail] = useState('')
@@ -31,7 +31,7 @@ export default function Auth() {
           value={email}
           placeholder="email@address.com"
           autoCapitalize={'none'}
-          autoCompleteType={"off"}
+          autoComplete={"off"}
         />
       </View>
       <View style={styles.verticallySpaced}>
@@ -43,12 +43,14 @@ export default function Auth() {
           secureTextEntry={true}
           placeholder="Password"
           autoCapitalize={'none'}
-          autoCompleteType={"off"}
+          autoComplete={"off"}
         />
       </View>
       <View style={[styles.verticallySpaced, { marginTop: 20 }]}>
         <Button
           title="Sign in"
+          titleStyle={{fontWeight: "300", fontSize: 18}}
+          color="secondary"
           disabled={!!loading.length}
           loading={loading === 'LOGIN'}
           onPress={() => handleLogin('LOGIN', email, password)}
@@ -57,6 +59,8 @@ export default function Auth() {
       <View style={styles.verticallySpaced}>
         <Button
           title="Sign up"
+          titleStyle={{fontWeight: "300", fontSize: 18}}
+          color="secondary"
           disabled={!!loading.length}
           loading={loading === 'SIGNUP'}
           onPress={() => handleLogin('SIGNUP', email, password)}

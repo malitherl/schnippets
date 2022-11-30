@@ -2,17 +2,15 @@ import { Dimensions, View, Text, StyleSheet, FlatList } from 'react-native'
 import { FontAwesome } from '@expo/vector-icons';
 import  Like from './Like';
 
-
 export default function ReaderView( props: any) {
     const Separator = () => <View style={styles.separator}/>
-
     const renderText = ({item, index} : any, props: any) => {
         return (
           <View style={styles.snippet}>
                 <Text style={styles.viewerText}>
-                  {item.snippet}
+                  {item.paragraph.slice(0,item.paragraph.length/2)}
                 </Text>
-                
+
               <View>
                 <View style={styles.panel}>
                   <Like id= {item.id} handleLike= {props.handleLike} snippet= {item} isLiked={props.isLiked} />
@@ -46,7 +44,8 @@ const styles = StyleSheet.create({
     snippetList: {
         flexGrow: 1,
         width: "100%",
-        height: Dimensions.get('window').height
+        height: Dimensions.get('window').height,
+        padding: 20,
       },
       viewerText: {
         fontSize: 16,

@@ -1,14 +1,14 @@
-import {View, StyleSheet, ScrollView} from 'react-native'
+import {View, StyleSheet} from 'react-native'
 import { supabase } from '../lib/initSupabase'
 import { Button, Text } from '@rneui/themed';
+import React, { useState } from 'react';
 import { useUser } from './UserContext';
-
+import UserBooks from './UserBooks';
 export default function Home( {navigation} : any ) {    
-   
+    const user = useUser()
     const Separator = () => <View style={styles.separator}/>
-
     return(
-        <View>
+        <View style={{padding: 25}}>
             <View style={styles.homeFeed}>
                 <Text h1={true}>Home</Text>
                 <Button title={'Sign out'} 
@@ -26,33 +26,51 @@ export default function Home( {navigation} : any ) {
             </View>
             <Separator/>
             
-                <ScrollView style={styles.activityFeed}>
-                    <View>
-                      <Text h2={true}>Recent Books</Text>
-                      <Text>Pick up where you left off</Text>
+                <View 
+                  style={styles.activityFeed}>
+                    <View
+                      style={styles.card}
+                    >
+                        <UserBooks />
+                        <Text h2={true}>Recent Books</Text>
+                        <Text>Pick up where you left off</Text>
+                            <View>
+                                        <Text>Norwegian Wood</Text>
+                                        <Text>Norwegian Wood</Text>
+                                        <Text>Norwegian Wood</Text>
+                                    </View> 
+                                <Separator/>    
+                        </View>
+                      </View>
+                    <View style={styles.card}>
+                          <Text h2={true}>Statistics</Text>
+                          <Text>Track your reading process here</Text>
+                              <View>
+                                 <Text>Goal: 10k Words</Text>
+                                 <Text>Goal: 10k Words</Text>
+                                 <Text>Goal: 10k Words</Text>    
+                               </View>
+                          <Separator/>
+                    
                     </View>
-                    <Separator/>
-                    <View>
-                      <Text h2={true}>Statistics</Text>
-                      <Text>Track your reading process here</Text>
+                    <View style={styles.card}>   
+                        <Text h2={true}>Explore</Text>
+                        <Text>Find a new book to read based on your interests</Text> 
+                            <View>
+                                <Button title={"Read New Snippets"}
+                                        titleStyle={{ fontWeight: "300", fontSize: 18}}
+                                        color="secondary"
+                                        size='md'
+                                        buttonStyle={{ 
+                                            borderRadius: 20, 
+                                            margin: 20
+                                        }}
+                                        onPress={() => navigation.navigate('Snippets')}/>
+                            </View>
+                        <Separator/>
                     </View>
-                    <Separator/>
-                    <View>
-                      <Text h3={true}>Find more books by reading new snippets?</Text>  
-                      <Button title={"Read New Snippets"}
-                              titleStyle={{ fontWeight: "300", fontSize: 18}}
-                              color="secondary"
-                              size='md'
-                              buttonStyle={{ 
-                                borderRadius: 20, 
-                                margin: 20
-                              }}
-                              onPress={() => navigation.navigate('Snippets')}
-                      />
-                    </View>
-                </ScrollView>
-                
-        </View>
+                </View>
+       
     )
 }
 
@@ -81,6 +99,9 @@ const styles = StyleSheet.create({
     activityFeed: {
         display: "flex",
         flexDirection: "column",
-
+    },
+    card: {
+        flexGrow: 1,
     }
+    
 })

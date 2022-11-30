@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { View, Button, StyleSheet,Text, SafeAreaView, FlatList, ScrollView, TouchableOpacity, Dimensions } from 'react-native'
+import { View, Button, StyleSheet, SafeAreaView, FlatList, ScrollView, TouchableOpacity, Dimensions } from 'react-native'
+import { Text } from '@rneui/base'
 import { Styles } from '../lib/constants'
 import { supabase } from '../lib/initSupabase'
 import { useUser } from '../components/UserContext'
@@ -9,6 +10,10 @@ import 'react-native-url-polyfill/auto'
 import Like from './Like'
 import ReaderView from './ReaderView'
 
+type Paragraph = {
+  num: number 
+  paragraph: string
+}
  
 type Snippet = {
   id: number
@@ -27,10 +32,12 @@ type Like = {
 
 export default function TodoList({navigation} : any) {
   const { user } = useUser()
+  const indicesForBooks = [121, 33, 26]
   const [snippets, setSnippet] = useState<Array<Snippet>>([])
+  const [paragraphs, setParagraphs] = useState<Array<Paragraph>>([]);
   const [texts, setTexts] = useState<Array<String>>([])
   useEffect(() => {
-    fetchSnippets()
+    indicesForBooks.forEach(i =>  fetchParagraphs(i))
   }, [])
 
   const handleLike = (id: number) => {
@@ -46,21 +53,35 @@ export default function TodoList({navigation} : any) {
     })
   }
 
-
- 
-  const fetchSnippets = async() => {
-    const { data: snippets, error } = await supabase
-      .from<Snippet>('snippets')
+  const fetchParagraphs = async (num : number) => {
+    const { data: paragraphs, error} = await supabase 
+      .from<Paragraph>('paragraphs')
       .select('*')
-      .range(0, 9)
-    if (error) {
+      .eq('num', num)
+      .range(0,1)
+      
+    if(error) {
       console.log('error', error)
     } else {
-      setSnippet(snippets!)
-      const textFromSnippet = snippets.map(s => s.snippet)
-      setTexts(textFromSnippet!)
+      
+      setParagraphs(prevState => prevState.concat(paragraphs))
+      console.log(paragraphs);
     }
   }
+ 
+  // const fetchSnippets = async() => {
+  //   const { data: snippets, error } = await supabase
+  //     .from<Snippet>('snippets')
+  //     .select('*')
+  //     .range(0, 9)
+  //   if (error) {
+  //     console.log('error', error)
+  //   } else {
+  //     setSnippet(snippets!)
+  //     const textFromSnippet = snippets.map(s => s.snippet)
+  //     setTexts(textFromSnippet!)
+  //   }
+  // }
  
   const isLiked = async(snippet_id: number) => {
     const { data: like, error } = await supabase
@@ -108,12 +129,15 @@ export default function TodoList({navigation} : any) {
     <View>
         <View style={styles.container}>
           <View style={styles.header}>
-            <Button title={'Home'} onPress={() => navigation.goBack()}/>
+            <View style={styles.headerNav}>
+              <Text onPress={() => navigation.goBack()}>back </Text>
+              <Text > For You </Text>
+           </View>  
           </View>
           <View 
              style={styles.snippetList}
             > 
-            <ReaderView handleLike={handleLike} snippets={snippets} isLiked={isLiked}/>
+            <ReaderView handleLike={handleLike} snippets={paragraphs} isLiked={isLiked}/>
           </View>
         </View>
       </View>
@@ -128,11 +152,19 @@ const styles = StyleSheet.create({
   },
   header: {
     backgroundColor: "transparent",
-    flexDirection: "row",
-    justifyContent: "space-between",
     color: "white",
     borderBottomColor: "black",
     borderBottomWidth: 1, 
+  },
+  headerNav: {
+    width: Dimensions.get("window").width - (Dimensions.get('window').width)*.5,
+    height: 45,
+    display: 'flex',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    fontSize: 16
+
   },
   logoutButton: {
     backgroundColor: "transparent",

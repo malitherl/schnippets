@@ -1,19 +1,18 @@
 import { Dimensions, View, Text, StyleSheet, FlatList } from 'react-native'
 import { FontAwesome } from '@expo/vector-icons';
 import  Like from './Like';
+import ParagraphView from './ParagraphView';
 
 export default function ReaderView( props: any) {
     const Separator = () => <View style={styles.separator}/>
     const renderText = ({item, index} : any, props: any) => {
         return (
           <View style={styles.snippet}>
-                <Text style={styles.viewerText}>
-                  {item.paragraph.slice(0,item.paragraph.length/2)}
-                </Text>
-
+               <ParagraphView paragraphText={item.paragraph}/> 
+              
               <View>
                 <View style={styles.panel}>
-                  <Like id= {item.id} handleLike= {props.handleLike} snippet= {item} isLiked={props.isLiked} />
+                  <Like snippet= {item} />
                   <FontAwesome
                     style={{ alignSelf: 'center' }}
                     name="commenting"

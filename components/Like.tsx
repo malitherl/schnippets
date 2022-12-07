@@ -1,58 +1,40 @@
 import React, { useState, useEffect } from 'react'
-import { View } from 'react-native'
 import { AntDesign } from '@expo/vector-icons';
 import { useUser } from './UserContext';
+import backendservice from '../services/backend'
 
-
-export default function Like ( props: any) {
-    const [liked, setLiked] = useState('');
-
+export default function Like ( {snippet}: any) {
+    const [id, setId] = useState(0);
+    const { user } = useUser();
+    const [liked, setLiked] = useState(false)
     useEffect(() => {
-        renderBackground()
+        setId(snippet.num)
+        backendservice
+        .isLiked(id, user!)
+        .then(like => {
+          setLiked(like!)
+        })
     }, [])
 
-    const handlePress= (id: number ) =>{
-      changeBackground()
-      props.handleLike(id)
-     
+    const handlePress= () =>{
+      if(liked) {
+        backendservice
+        .removeLike(id, user!)
+        .then(()=> setLiked(!liked))
+      } else {
+        backendservice
+        .addLike(id, user!)
+        .then(()=> setLiked(!liked))
+      }
     } 
     
-    const renderBackground = () => {
-        props.isLiked(props.snippet.id).then((like: any[]) => {
-            let snipLikes = like ? like.length : 0;
-            if(snipLikes > 0) {
-              setLiked('pink')
-            } else {
-              setLiked('#fff')
-            }
-        })
-    }
-    const changeBackground = () => {
-        props.isLiked(props.snippet.id).then((like: any[]) => {
-            let snipLikes = like ? like.length : 0;
-            if(snipLikes > 0) {
-              setLiked('#fff')
-            } else {
-              setLiked('#ffcccc')
-            }
-        })
-    }
-
-
-
     return(
-
             <AntDesign
               style={{ alignSelf: 'center' }}
               name="heart"
               size={35}
-              color= {liked}
-              onPress={() => { handlePress(props.snippet.id)}}
+              color= {liked ? '#ffcccc' : '#fff'}
+              onPress={() => { handlePress()}}
             />
       
-    )
-
-
-
-
-}
+   )}

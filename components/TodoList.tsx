@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { View, Button, StyleSheet, SafeAreaView, FlatList, ScrollView, TouchableOpacity, Dimensions } from 'react-native'
+import { View, StyleSheet, Dimensions } from 'react-native'
 import { Text } from '@rneui/base'
 import { Styles } from '../lib/constants'
 import { supabase } from '../lib/initSupabase'
@@ -9,6 +9,8 @@ import { Snippet } from './style'
 import 'react-native-url-polyfill/auto'
 import Like from './Like'
 import ReaderView from './ReaderView'
+import backendService from '../services/backend'
+
 
 type Paragraph = {
   num: number 
@@ -36,94 +38,22 @@ export default function TodoList({navigation} : any) {
   const [snippets, setSnippet] = useState<Array<Snippet>>([])
   const [paragraphs, setParagraphs] = useState<Array<Paragraph>>([]);
   const [texts, setTexts] = useState<Array<String>>([])
-  useEffect(() => {
-    indicesForBooks.forEach(i =>  fetchParagraphs(i))
-  }, [])
+   useEffect(() => {
+     setParagraphs([])
+     indicesForBooks.forEach(i =>  
+        backendService
+        .fetchParagraphs(i)
+        .then(p => {
+            setParagraphs(prevState => prevState.concat(p!))
+          })
+        )
+   }, [])
 
-  const handleLike = (id: number) => {
-    isLiked(id).then(like => {
-      let snipLikes = like ? like.length : 0; 
-      if(snipLikes > 0) {
-        console.log('removing like')
-        removeLike(id)
-      } else {
-        console.log('adding like')
-        addLike(id)
-      }
-    })
-  }
-
-  const fetchParagraphs = async (num : number) => {
-    const { data: paragraphs, error} = await supabase 
-      .from<Paragraph>('paragraphs')
-      .select('*')
-      .eq('num', num)
-      .range(0,1)
-      
-    if(error) {
-      console.log('error', error)
-    } else {
-      
-      setParagraphs(prevState => prevState.concat(paragraphs))
-      console.log(paragraphs);
-    }
-  }
- 
-  // const fetchSnippets = async() => {
-  //   const { data: snippets, error } = await supabase
-  //     .from<Snippet>('snippets')
-  //     .select('*')
-  //     .range(0, 9)
-  //   if (error) {
-  //     console.log('error', error)
-  //   } else {
-  //     setSnippet(snippets!)
-  //     const textFromSnippet = snippets.map(s => s.snippet)
-  //     setTexts(textFromSnippet!)
-  //   }
-  // }
- 
-  const isLiked = async(snippet_id: number) => {
-    const { data: like, error } = await supabase
-      .from<Like>('likes')
-      .select('*')
-      .eq('user_id', user!.id)
-      .eq('snippet_id', snippet_id)
-    if (error) {
-      console.log('error', error)
-    } else {
-      setSnippet(snippets!)
-      return like
-    }
-  }
-
-  const addLike = async (snippet_id: number) => {
-    console.log('newLike:', snippet_id)
-    const { data: like, error } = await supabase
-      .from<Like>('likes')
-      .insert({ snippet_id, user_id: user!.id })
-      .single()
-    if (error) {
-      console.log(error.message)
-    } else {
-      console.log('liked!')
-    }
-  }
-
-  const removeLike = async (snippet_id: number) => {
-    console.log('removedLike:', snippet_id)
-    const { data: like, error} = await supabase
-      .from<Like>('likes')
-      .delete()
-      .eq('user_id', user!.id)
-      .eq('snippet_id', snippet_id)
-    if(error) {
-      console.log('error', error)
-    } else {
-      setSnippet(snippets!)
-    }    
-  }
-
+   const handleLike = (id: number) => {
+      backendService
+      .isLiked(id, user!)
+      .then(like => like)
+   }
 
   return (
     <View>
@@ -137,7 +67,7 @@ export default function TodoList({navigation} : any) {
           <View 
              style={styles.snippetList}
             > 
-            <ReaderView handleLike={handleLike} snippets={paragraphs} isLiked={isLiked}/>
+            <ReaderView handleLike={handleLike} snippets={paragraphs} isLiked={true}/>
           </View>
         </View>
       </View>

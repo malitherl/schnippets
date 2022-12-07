@@ -1,11 +1,21 @@
 import {View, StyleSheet} from 'react-native'
 import { supabase } from '../lib/initSupabase'
 import { Button, Text } from '@rneui/themed';
-import React, { useState } from 'react';
-import { useUser } from './UserContext';
-import UserBooks from './UserBooks';
-export default function Home( {navigation} : any ) {    
-    const user = useUser()
+import React, { useState, useEffect } from 'react';
+import backendService from '../services/backend'
+import { useUser } from './UserContext'
+
+export default function Home( {navigation} : any ) {  
+    const [bookLikes, setBookLikes] = useState<Array<number>>([])
+    const { user } = useUser()
+    useEffect(() => {
+        backendService
+        .fetchLikes(user!)
+        .then(likes => {
+            const idArray = likes?.map(like => like.snippet_id)
+            setBookLikes(idArray!)
+        })
+    }, [])
     const Separator = () => <View style={styles.separator}/>
     return(
         <View style={{padding: 25}}>
@@ -31,15 +41,18 @@ export default function Home( {navigation} : any ) {
                     <View
                       style={styles.card}
                     >
-                        <UserBooks />
                         <Text h2={true}>Recent Books</Text>
-                        <Text>Pick up where you left off</Text>
-                            <View>
-                                        <Text>Norwegian Wood</Text>
-                                        <Text>Norwegian Wood</Text>
-                                        <Text>Norwegian Wood</Text>
-                                    </View> 
-                                <Separator/>    
+                        <Button title={"Pick up where you left off"}
+                            titleStyle={{ fontWeight: "300", fontSize: 18}}
+                            type='solid'
+                            color='secondary'
+                            size='md'
+                            buttonStyle={{ 
+                                borderRadius: 20, 
+                                margin: 20
+                            }}
+                            onPress={() => navigation.navigate('RecentBooks', { keys: bookLikes})}/>
+                          <Separator/>    
                         </View>
                       </View>
                     <View style={styles.card}>

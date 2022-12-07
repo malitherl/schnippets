@@ -9,7 +9,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Home from './components/Home'
 import TodoList from './components/TodoList';
-
+import SnippetView from './components/SnippetView';
+import RecentBooks from './components/RecentBooks';
 
 //the main issue here: We don't have the useContextProvider wrapped around <TodoList> which means we lose Context 
 
@@ -67,6 +68,20 @@ const Content = ({navigation} : any) => {
   )
 }
 
+const Current = ({navigation} : any) => {
+  return (
+    <UserContextProvider>
+      <ThemeProvider theme={theme}>
+        <View style={styles.container}>
+          <SnippetView navigation={navigation}/>
+          <StatusBar style="auto" />
+        </View>
+      </ThemeProvider>
+  </UserContextProvider>
+)
+}
+
+
 
 const Stack = createNativeStackNavigator();
 
@@ -76,6 +91,8 @@ export default function App() {
       <Stack.Navigator screenOptions={{headerShown: false}} initialRouteName='Home'>
         <Stack.Screen name="Home" component={Container} />
         <Stack.Screen name="Snippets" component={Content}/>
+        <Stack.Screen name="CurrentBook" component={Current} />
+        <Stack.Screen name="RecentBooks" component={RecentBooks}/>
       </Stack.Navigator>
     </NavigationContainer>
   )

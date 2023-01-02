@@ -89,12 +89,12 @@ export default function App() {
   return (
     <NavigationContainer>
       <UserContextProvider>
-        <Stack.Navigator screenOptions={{headerShown: false}} initialRouteName='Home'>
-          <Stack.Screen name="Home" component={Container} />
-          <Stack.Screen name="Snippets" component={Content}/>
-          <Stack.Screen name="CurrentBook" component={Current} />
-          <Stack.Screen name="RecentBooks" component={RecentBooks}/>
-        </Stack.Navigator>
+          <Stack.Navigator screenOptions={{headerShown: false}} initialRouteName='Home'>
+            <Stack.Screen name="Home" component={Container} />
+            <Stack.Screen name="Snippets" component={Content}/>
+            <Stack.Screen name="CurrentBook" component={Current} />
+            <Stack.Screen name="RecentBooks" component={RecentBooks}/>
+          </Stack.Navigator>
       </UserContextProvider>
     </NavigationContainer>
   )

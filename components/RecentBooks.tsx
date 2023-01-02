@@ -8,73 +8,6 @@ import { useUser } from './UserContext'
 import { supabase } from '../lib/initSupabase'
 export default function RecentBooks ({navigation} : any) {
   const { user } = useUser();  
-    const [ids, setIds] = useState<Array<number>>([])
-    const [books, setBooks] = useState<Array<Book>>([])
-    const [loading, setLoading] = useState(true);    
-
-    useEffect(() => {
-      if (user) {
-          getIds()        
-      } 
-  }, [])
-    useEffect(()=> {
-        if(books.length < ids.length) {
-            getBook(ids)
-        } else {
-        }
-    }, [ids])
-
-    async function getIds () {
-      try {
-          setLoading(true)
-          if(!user) throw new Error('No valid user!');
-          
-          let {data, error} = await supabase
-              .from('likes')
-              .select('*')
-              .eq('user_id', user?.id)
-          if(error) {
-              throw error 
-          } 
-          if (data) {
-              setIds(data.map(likes => likes.snippet_id))
-          }   
-      } catch (error) {
-          if (error instanceof Error) {
-              Alert.alert(error.message)
-          }
-      } finally {
-          setLoading(false)
-          
-      }
-  }
-
-  async function getBook (ids: number[]) {
-      try {
-          setLoading(true);
-          if(!ids) throw new Error('ids invalid')
-          if(!user) throw new Error('invalid user')
-          ids.forEach( async id => {
-              let {data, error} = await supabase
-                  .from('all_data')
-                  .select('*')
-                  .eq('num', id)
-                  .limit(1)
-                  .single()
-              if(error) {
-                  console.log('error', error)
-              } else {
-                  setBooks(prev => prev.concat(data))
-              }
-      })
-      }   catch (error) {
-          if (error instanceof Error) {
-              Alert.alert(error.message)
-          }
-      } finally {
-          setLoading(false)
-      }
-  }
 
 
 
@@ -82,16 +15,12 @@ export default function RecentBooks ({navigation} : any) {
 
         <View style={styles.container}>
            
-           {books.length === ids.length ? 
-            books.map(book => 
             <Card>
-              <Card.Title>{book.title}</Card.Title>
+              <Card.Title>Title</Card.Title>
                 <Card.Divider/>
                 <Text>Progress Listed Here</Text>
                 <Button>Continue</Button>
-            </Card>)
-            : <Text>Like some snippets and they'll appear here</Text> 
-          }
+            </Card>
         </View>
 
     )

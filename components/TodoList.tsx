@@ -4,7 +4,6 @@ import { Text } from '@rneui/base'
 import { Styles } from '../lib/constants'
 import { supabase } from '../lib/initSupabase'
 import { useUser } from '../components/UserContext'
-import { Snippet } from './style' 
 /** URL polyfill. Required for Supabase queries to work in React Native. */
 import 'react-native-url-polyfill/auto'
 import Like from './Like'
@@ -22,14 +21,6 @@ type Snippet = {
   created_at: Date
   isbn: string
   snippet: string
-}
-
- 
-type Like = {
-  id: number
-  inserted_at: Date
-  snippet_id: number
-  user_id: string
 }
 
 export default function TodoList({navigation} : any) {

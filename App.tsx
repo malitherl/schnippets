@@ -7,7 +7,7 @@ import { UserContextProvider, useUser } from './components/UserContext'
 import Auth from './components/Auth'
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Home from './components/Home'
+import Home from './components/HomeScreen/Home'
 import TodoList from './components/TodoList';
 import SnippetView from './components/SnippetView';
 import RecentBooks from './components/RecentBooks';
@@ -28,19 +28,19 @@ const theme = createTheme({
 
 const Login = ({navigation} : any) => {
   const { user } = useUser()
-  return user ? <Home navigation={navigation}/> : <Auth />
+  return user ? <Home navigation={navigation}/>: <Auth />;
 }
 
 
 const Container = ({navigation} : any) => {
   return (
       <UserContextProvider>
-        <ThemeProvider theme={theme}>
-          <View style={styles.container}>
-            <Login navigation={navigation}/>
-            <StatusBar style="auto" />
-          </View>
-        </ThemeProvider>
+          <ThemeProvider theme={theme}>
+            <View style={styles.container}>
+              <Login navigation={navigation}/>
+              <StatusBar style="auto" />
+            </View>
+          </ThemeProvider>
     </UserContextProvider>
   )
 } 
@@ -58,12 +58,12 @@ const Content = ({navigation} : any) => {
   console.log('navigation in Content')
   return (
       <UserContextProvider>
-        <ThemeProvider theme={theme}>
-          <View style={styles.container}>
-            <Reader navigation={navigation}/>
-            <StatusBar style="auto" />
-          </View>
-        </ThemeProvider>
+          <ThemeProvider theme={theme}>
+            <View style={styles.container}>
+              <Reader navigation={navigation}/>
+              <StatusBar style="auto" />
+            </View>
+          </ThemeProvider>
     </UserContextProvider>
   )
 }
@@ -71,12 +71,12 @@ const Content = ({navigation} : any) => {
 const Current = ({navigation} : any) => {
   return (
     <UserContextProvider>
-      <ThemeProvider theme={theme}>
-        <View style={styles.container}>
-          <SnippetView navigation={navigation}/>
-          <StatusBar style="auto" />
-        </View>
-      </ThemeProvider>
+        <ThemeProvider theme={theme}>
+          <View style={styles.container}>
+            <SnippetView navigation={navigation}/>
+            <StatusBar style="auto" />
+          </View>
+        </ThemeProvider>
   </UserContextProvider>
 )
 }
@@ -88,12 +88,14 @@ const Stack = createNativeStackNavigator();
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{headerShown: false}} initialRouteName='Home'>
-        <Stack.Screen name="Home" component={Container} />
-        <Stack.Screen name="Snippets" component={Content}/>
-        <Stack.Screen name="CurrentBook" component={Current} />
-        <Stack.Screen name="RecentBooks" component={RecentBooks}/>
-      </Stack.Navigator>
+      <UserContextProvider>
+        <Stack.Navigator screenOptions={{headerShown: false}} initialRouteName='Home'>
+          <Stack.Screen name="Home" component={Container} />
+          <Stack.Screen name="Snippets" component={Content}/>
+          <Stack.Screen name="CurrentBook" component={Current} />
+          <Stack.Screen name="RecentBooks" component={RecentBooks}/>
+        </Stack.Navigator>
+      </UserContextProvider>
     </NavigationContainer>
   )
 }

@@ -1,8 +1,9 @@
-import React, { useEffect, useState, createContext, useContext } from 'react'
+import React, { useEffect, useState, createContext, useContext, useMemo } from 'react'
 import { Session, User } from '@supabase/supabase-js'
 import { supabase } from '../lib/initSupabase'
+import { Like, Book } from '../services/backend';
 
-export const UserContext = createContext<{ user: User | null; session: Session | null }>({
+export const UserContext = createContext<{ user: User | null; session: Session | null; }>({
   user: null,
   session: null,
 })
@@ -19,13 +20,14 @@ export const UserContextProvider = (props: any) => {
       console.log(`Supabase auth event: ${event}`)
       setSession(session)
       setUser(session?.user ?? null)
-    })
-
+    })  
+    
     return () => {
       authListener!.unsubscribe()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+  
 
   const value = {
     session,

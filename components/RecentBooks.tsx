@@ -1,50 +1,97 @@
 import { useEffect, useState } from 'react'
-import { ListItem } from '@rneui/base'
-import { StyleSheet, Dimensions, Text , View, } from 'react-native'
+import { Text, ListItem, Card, Button } from '@rneui/base'
+import { StyleSheet, Dimensions, View, Alert, } from 'react-native'
 
-import backendService, {Book} from '../services/backend'
+import {Book} from '../services/backend'
 import { Styles } from '../lib/constants'
-
-export default function RecentBooks ({route, navigation} : any) {
-    const nums = route.params.keys
-    /**
-     * What we do here is take the snippet_ids from the likes table 
-     * and we match them back to the books that they are related to, 
-     * to allow us to display the books the user has most recently liked 
-     */
+import { useUser } from './UserContext'
+import { supabase } from '../lib/initSupabase'
+export default function RecentBooks ({navigation} : any) {
+  const { user } = useUser();  
+    const [ids, setIds] = useState<Array<number>>([])
     const [books, setBooks] = useState<Array<Book>>([])
-    
+    const [loading, setLoading] = useState(true);    
 
     useEffect(() => {
-        setBooks([])
-        nums.forEach((n: number) => {
-            backendService
-            .fetchBook(n)
-            .then(book => {
-                setBooks(prevState => prevState.concat(book!))
-            })
-        })
-    }, [])
+      if (user) {
+          getIds()        
+      } 
+  }, [])
+    useEffect(()=> {
+        if(books.length < ids.length) {
+            getBook(ids)
+        } else {
+        }
+    }, [ids])
+
+    async function getIds () {
+      try {
+          setLoading(true)
+          if(!user) throw new Error('No valid user!');
+          
+          let {data, error} = await supabase
+              .from('likes')
+              .select('*')
+              .eq('user_id', user?.id)
+          if(error) {
+              throw error 
+          } 
+          if (data) {
+              setIds(data.map(likes => likes.snippet_id))
+          }   
+      } catch (error) {
+          if (error instanceof Error) {
+              Alert.alert(error.message)
+          }
+      } finally {
+          setLoading(false)
+          
+      }
+  }
+
+  async function getBook (ids: number[]) {
+      try {
+          setLoading(true);
+          if(!ids) throw new Error('ids invalid')
+          if(!user) throw new Error('invalid user')
+          ids.forEach( async id => {
+              let {data, error} = await supabase
+                  .from('all_data')
+                  .select('*')
+                  .eq('num', id)
+                  .limit(1)
+                  .single()
+              if(error) {
+                  console.log('error', error)
+              } else {
+                  setBooks(prev => prev.concat(data))
+              }
+      })
+      }   catch (error) {
+          if (error instanceof Error) {
+              Alert.alert(error.message)
+          }
+      } finally {
+          setLoading(false)
+      }
+  }
 
 
 
     return ( 
 
-        <View>
-            <View style={styles.headerNav}>
-              <Text onPress={() => navigation.goBack()}>back </Text>
-              <Text > For You </Text>
-           </View>  
-
-                    {books.length > 0 ?
-                        books.map((book, i) =>{
-                            return <ListItem key={i}>
-                               <Text>{book.title} by {book.author}</Text> 
-                            </ListItem>
-                        })
-                        
-                        
-                        : <Text>Like some snippets and they'll appear here</Text>}
+        <View style={styles.container}>
+           
+           {books.length === ids.length ? 
+            books.map(book => 
+            <Card>
+              <Card.Title>{book.title}</Card.Title>
+                <Card.Divider/>
+                <Text>Progress Listed Here</Text>
+                <Button>Continue</Button>
+            </Card>)
+            : <Text>Like some snippets and they'll appear here</Text> 
+          }
         </View>
 
     )

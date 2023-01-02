@@ -1,5 +1,5 @@
 import { supabase } from '../lib/initSupabase'
-import { User} from '@supabase/supabase-js'
+import { User } from '@supabase/supabase-js'
 
 export type Like = {
     id: number
@@ -23,6 +23,10 @@ export type Like = {
     length: number, 
   }
 
+  export type Behavior = {
+    likes: Array<number>
+  }
+
   const fetchBook = async (num : number ) => {
     const { data: book, error} = await supabase
       .from<Book>('all_data')
@@ -33,28 +37,9 @@ export type Like = {
     if(error) {
       console.log('error', error)
     } else {
-      return book 
+      return {title: book.title, author: book.author, num: book.num} 
     }
   }
-
-  const fetchLikes = async(user: User) => {
-      const { data: likeArray, error } = await supabase
-      .from<Like>('likes')
-      .select('*')
-      .range(0,2)
-      if(error) {
-        console.log('error', error)
-      } else {
-        return likeArray
-      }
-  }
-
-  //we should make a modified version of this function 
-  //that will take a range and this range will be 
-  /** given from what the user has already read at the moment 
-   * probably stored in maybe a context hook? 
-   * 
-   */
 
   const fetchReading = async (num: number, start: number, end: number) => {
     const { data: paragraphs, error} = await supabase 
@@ -68,9 +53,6 @@ export type Like = {
         return paragraphs; 
       }
   }
-
-
-
 
   const fetchParagraphs = async (num : number) => {
     const { data: paragraphs, error} = await supabase 
@@ -135,8 +117,7 @@ const isLiked = async(snippet_id: number, user: User) => {
     isLiked: isLiked, 
     addLike: addLike,
     removeLike: removeLike,
-    fetchBook: fetchBook,
-    fetchLikes: fetchLikes
+    fetchBook: fetchBook
   }
 
   export default exportObj

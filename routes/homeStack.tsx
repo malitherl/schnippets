@@ -1,6 +1,6 @@
 import { createStackNavigator } from "react-navigation-stack";
 import { createAppContainer} from "react-navigation";
-import Home from "../components/Home";
+import Home from "../components/HomeScreen/Home";
 import TodoList from "../components/TodoList";
 
 const screens = {

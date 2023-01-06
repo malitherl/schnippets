@@ -2,15 +2,14 @@
 import { Text } from '@rneui/themed'; 
 import { useState, useEffect } from "react";
 import { useUser } from "../UserContext"
-import { Alert, View } from "react-native";
-import { supabase } from '../../lib/initSupabase';
+import { View } from "react-native";
 import { Book } from '../../services/backend';
-import { useBooks } from '../BookHook';
+import { useBooks } from '../../hooks/useBooks';
 import { ListItem } from '@rneui/base';
 
 export default function RecentActivity (props : any) {
     const { user } = useUser();
-    const books  = useBooks(user!); 
+    const books = useBooks(user!, 2); 
     const [recentBooks, setRecentBooks] = useState<Array<Book>>([]);
     useEffect(() => {
         if(books && books.length > 0) {
@@ -19,7 +18,7 @@ export default function RecentActivity (props : any) {
     }, [books])
     return (
         <View>
-            {recentBooks.length > 0 ? recentBooks.map((book, index) => <ListItem key={index}><Text>{book.title}</Text></ListItem>) : <Text>No</Text>}
+            {recentBooks.length > 0 ? recentBooks.map((book, index) => <ListItem key={index}><Text>{book.title}</Text></ListItem>) : <Text>Loading...</Text>}
         </View>
     )
 }

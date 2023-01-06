@@ -15,6 +15,7 @@ export type Like = {
   }
 
   export type Book = {
+    id: number
     num: number 
     author: string,
     title: string, 

@@ -4,13 +4,13 @@ import { StyleSheet, View } from 'react-native'
 import { Styles } from './lib/constants'
 import { ThemeProvider, createTheme } from '@rneui/themed';
 import { UserContextProvider, useUser } from './components/UserContext'
-import Auth from './components/Auth'
+import Auth from './components/AuthScreen/Auth'
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Home from './components/HomeScreen/Home'
-import TodoList from './components/TodoList';
+import TodoList from './components/ForYouScreen/ForYou';
 import SnippetView from './components/SnippetView';
-import RecentBooks from './components/RecentBooks';
+import RecentBooks from './components/RecentsScreen/RecentBooks';
 
 //the main issue here: We don't have the useContextProvider wrapped around <TodoList> which means we lose Context 
 

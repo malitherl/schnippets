@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { AntDesign } from '@expo/vector-icons';
-import { useUser } from './UserContext';
-import backendservice from '../services/backend'
+import { useUser } from '../UserContext';
+import backendservice from '../../services/backend'
 
 export default function Like ( {snippet}: any) {
     const [id, setId] = useState(0);

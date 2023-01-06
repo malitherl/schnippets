@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Alert, StyleSheet, View } from 'react-native'
-import { Styles } from '../lib/constants'
-import { supabase } from '../lib/initSupabase'
+import { Styles } from '../../lib/constants'
+import { supabase } from '../../lib/initSupabase'
 
 import { Button, Input } from '@rneui/themed';
 

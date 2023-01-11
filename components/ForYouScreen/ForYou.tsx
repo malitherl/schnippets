@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { View, StyleSheet, Dimensions } from 'react-native'
 import { Text } from '@rneui/base'
 import { Styles } from '../../lib/constants'
-import { supabase } from '../../lib/initSupabase'
 import { useUser } from '../UserContext'
 /** URL polyfill. Required for Supabase queries to work in React Native. */
 import 'react-native-url-polyfill/auto'
